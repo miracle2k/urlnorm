@@ -25,6 +25,12 @@ def pytest_generate_tests(metafunc):
             # note: this breaks the internet for parameters that are positional (stupid nextel) and/or don't have an = sign
             # 'http://test.example/?a=1&b=2&a=3': 'http://test.example/?a=1&a=3&b=2', # should be in sorted/grouped order
 
+            # special types, incomplete urls are ok to.
+            'http://localhost/': 'http://localhost/',
+            '/%7ebar': '/~bar',
+            # the domain in an email is currently not normalized though
+            'mailto:gg@example.ORG': 'mailto:gg@example.ORG',
+
             # 'http://s.xn--q-bga.de/':       'http://s.q\xc3\xa9.de/'.decode('utf8'), # should be in idna format
             'http://test.example/?':        'http://test.example/', # no trailing ?
             'http://test.example?':       'http://test.example/', # with trailing /
@@ -67,9 +73,6 @@ def pytest_generate_tests(metafunc):
 
     elif metafunc.function in [test_invalid_urls]:
         for url in [
-            'http://http://www.exemple.com/', # invalid domain
-            '-',
-            'asdf',
             'HTTP://4294967297/test', # one more than max ip > int
             'http://[img]http://i790.photobucket.com/albums/yy185/zack-32009/jordan.jpg[/IMG]',
             ]:

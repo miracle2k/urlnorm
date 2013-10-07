@@ -181,11 +181,7 @@ def norm(url):
 def norm_tuple(scheme, authority, path, parameters, query, fragment):
     """given individual url components, return its normalized form"""
     scheme = scheme.lower()
-    if not scheme:
-        raise InvalidUrl('missing URL scheme')
     authority = norm_netloc(scheme, authority)
-    if not authority:
-        raise InvalidUrl('missing netloc')
     path = norm_path(scheme, path)
     # TODO: put query in sorted order; or at least group parameters together
     # Note that some websites use positional parameters or the name part of a query so this would break the internet
@@ -235,10 +231,6 @@ def norm_netloc(scheme, netloc):
             raise InvalidUrl('host %r does not escape to a valid ip' % host)
     if host[-1] == '.':
         host = host[:-1]
-
-    # bracket check is for ipv6 hosts
-    if '.' not in host and not (host[0] == '[' and host[-1] == ']'):
-        raise InvalidUrl('host %r is not valid' % host)
 
     authority = host.lower()
     if 'xn--' in authority:
